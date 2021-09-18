@@ -1,0 +1,304 @@
+definitions:
+  handler.AuthLoginResponse:
+    properties:
+      data:
+        $ref: '#/definitions/handler.AuthLoginResponseData'
+    type: object
+  handler.AuthLoginResponseData:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MzE5NDYzMDEsImlzcyI6ImdvLXVzZXItYXBpIn0.bR7ooUYtwG7xocBZgNJFu8l4O5rxdawKCYbazXpDZX4
+        type: string
+      refresh_token:
+        example: BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk
+        type: string
+    type: object
+  handler.AuthLogoutResponse:
+    properties:
+      data:
+        $ref: '#/definitions/handler.AuthLogoutResponseData'
+    type: object
+  handler.AuthLogoutResponseData:
+    properties:
+      message:
+        example: Logged out successfully
+        type: string
+    type: object
+  handler.UserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.User'
+    type: object
+  handler.UsersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
+    type: object
+  model.User:
+    properties:
+      created_at:
+        example: "2018-09-30 10:39:08"
+        type: string
+      display_name:
+        example: Fulan
+        type: string
+      email:
+        example: fulan@gmail.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: fulan_fulan
+        type: string
+      password:
+        example: jangankasihtauoranglain
+        type: string
+      updated_at:
+        example: "2018-09-30 10:39:08"
+        type: string
+    type: object
+info:
+  contact:
+    email: hi.ukasyah@gmail.com
+    name: Ukasyah
+  description: A simple user API example.
+  license:
+    name: The Unlicense
+    url: http://unlicense.org
+  title: User API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login using name and password
+      parameters:
+      - description: Username, e.g. ukasyah99
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: Password, e.g. rahasia
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.AuthLoginResponse'
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout by deleting refresh token
+      parameters:
+      - description: As bearer token, e.g. 'Bearer <access-token>'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: This token is obtained when login successfully
+        in: body
+        name: refresh_token
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.AuthLogoutResponse'
+  /auth/me:
+    get:
+      consumes:
+      - application/json
+      description: Get current user
+      parameters:
+      - description: As bearer token, e.g. 'Bearer <access-token>'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UserResponse'
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Get new access token
+      parameters:
+      - description: This token is obtained when login successfully
+        in: body
+        name: refresh_token
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.AuthLoginResponse'
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
+      parameters:
+      - description: As bearer token, e.g. 'Bearer <access-token>'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UsersResponse'
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: As bearer token, e.g. 'Bearer <access-token>'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Display name
+        in: body
+        name: display_name
+        required: true
+        schema:
+          type: string
+      - description: Name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UserResponse'
+  /users/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Delete existing user
+      parameters:
+      - description: As bearer token, e.g. 'Bearer <access-token>'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UserResponse'
+    get:
+      consumes:
+      - application/json
+      description: Get specific user
+      parameters:
+      - description: As bearer token, e.g. 'Bearer <access-token>'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UserResponse'
+    put:
+      consumes:
+      - application/json
+      description: Update user
+      parameters:
+      - description: As bearer token, e.g. 'Bearer <access-token>'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Display name
+        in: body
+        name: display_name
+        schema:
+          type: string
+      - description: Name
+        in: path
+        name: name
+        type: string
+      - description: Email
+        in: body
+        name: email
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UserResponse'
+swagger: "2.0"
