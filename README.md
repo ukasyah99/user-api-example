@@ -19,6 +19,10 @@ Before you proceed, please make sure these programs are present:
 
 Run `go mod tidy` to install required packages.
 
+Copy file `.env.example` to `.env` and update its content.
+
+Migrate database by running `make migrate-up`.
+
 ## Running The Program
 
 Run `go run main.go` to start the program. It should be available at http://localhost:8080.
